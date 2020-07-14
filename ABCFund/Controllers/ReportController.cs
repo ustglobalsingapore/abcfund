@@ -33,7 +33,6 @@ namespace ABCFund.Controllers
             var prestigeFundId = 1;
             var globalFundId = 2;
 
-
             var holdings = _context.Holding.AsQueryable();
             var prestigeHoldings = holdings.Where(s => s.FundId == prestigeFundId).OrderByDescending(s => s.Weight);
             var globalHoldings = holdings.Where(s => s.FundId == globalFundId).OrderByDescending(s => s.Weight);
