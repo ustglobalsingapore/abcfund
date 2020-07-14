@@ -1,0 +1,949 @@
+﻿@model ABCFund.Models.ReportViewModel
+@{
+    ViewData["Title"] = "Report";
+}
+
+<body id="page-top">
+
+    <!-- ********************** Prestige Fund Report page ********************** -->
+    <!-- *********************************************************************** -->
+    <!-- *********************************************************************** -->
+    <!-- ABC Fund Report Title -->
+    <div class="text-center">
+        <h2>ABC Prestige Fund Daily Report</h2>
+    </div>
+    <br />
+
+    <!-- Investment Objective -->
+    <h1 class="h3 mb-2 text-gray-800">Prestige Fund Objective</h1>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <p>
+                        ABC Asset Management (ABC) is one of Singapore’s oldest investment companies, created in 1968. ABC manages $20 Billion of assets, making it the largest active manager in Singapore.
+                    </p>
+                    <p>
+                        ABC manages 2 funds, <b>Prestige Fund (ticker symbol - ABCP)</b> that caters to local Singapore market and <b>Global Fund (ticker symbol - ABCG)</b> that caters to the US market. The Prestige Fund aims at long-term capital growth by investing in local Sinagpore equity markets.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prestige Overview Chart -->
+    <h1 class="h3 mb-2 text-gray-800">Prestige Overview</h1>
+    <p>as of @Model.PrestigePeriodic.TradeDate.ToString("d")</p>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <canvas id="chartPrestige" class="my-4 w-100 chartjs-render-monitor" width="800" height="380" style="display: block; width: 90%; height: 40%;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+
+    <!-- Prestige Performance History -->
+    <h1 class="h3 mb-2 text-gray-800">Prestige Performance History</h1>
+    <p>as of @Model.PrestigePeriodic.TradeDate.ToString("d")</p>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        Prestige against Straits Time Index
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Fund
+                                    </th>
+                                    <th>Year to Date</th>
+                                    <th>1 Month</th>
+                                    <th>3 Months</th>
+                                    <th>6 Months</th>
+                                    <th>1 Year</th>
+                                    <th>Since Inception (p.a)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Prestige (ABCP)
+                                    </td>
+                                    <td>
+                                        @Model.PrestigePeriodic.YearToDate%
+                                    </td>
+                                    <td>
+                                        @Model.PrestigePeriodic.OneMonth%
+                                    </td>
+                                    <td>
+                                        @Model.PrestigePeriodic.ThreeMonth%
+                                    </td>
+                                    <td>
+                                        @Model.PrestigePeriodic.SixMonth%
+                                    </td>
+                                    <td>
+                                        @Model.PrestigePeriodic.OneYear%
+                                    </td>
+                                    <td>
+                                        @Model.PrestigePeriodic.SinceInception%
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Straits Time Index (^STI)
+                                    </td>
+                                    <td>
+                                        @Model.StiPeriodic.YearToDate%
+                                    </td>
+                                    <td>
+                                        @Model.StiPeriodic.OneMonth%
+                                    </td>
+                                    <td>
+                                        @Model.StiPeriodic.ThreeMonth%
+                                    </td>
+                                    <td>
+                                        @Model.StiPeriodic.SixMonth%
+                                    </td>
+                                    <td>
+                                        @Model.StiPeriodic.OneYear%
+                                    </td>
+                                    <td>
+                                        @Model.StiPeriodic.SinceInception%
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+
+    <!-- Prestige Top 10 Holdings -->
+    <h1 class="h3 mb-2 text-gray-800 pagebreak">Top 10 Prestige Holdings</h1>
+    <p>as of @Model.PrestigePeriodic.TradeDate.ToString("d")</p>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <!-- DataTales Example -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Prestige Fund Holdings (total: @Model.PrestigeHoldings.Count())</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>@Html.DisplayNameFor(model => model.PrestigeHoldings[0].Weight)</th>
+                                    <th>@Html.DisplayNameFor(model => model.PrestigeHoldings[0].Name)</th>
+                                    <th>@Html.DisplayNameFor(model => model.PrestigeHoldings[0].Symbol)</th>
+                                    <th>@Html.DisplayNameFor(model => model.PrestigeHoldings[0].Sector)</th>
+                                    <th>@Html.DisplayNameFor(model => model.PrestigeHoldings[0].Industry)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{int RowNo = 0;}
+                                @foreach (var item in Model.PrestigeHoldings)
+                                {
+                                    <tr>
+                                        <td>@{RowNo++;} @RowNo</td>
+                                        <td>@Html.DisplayFor(model => item.Weight)%</td>
+                                        <td>@Html.DisplayFor(model => item.Name)</td>
+                                        <td>@Html.DisplayFor(model => item.Symbol)</td>
+                                        <td>@Html.DisplayFor(model => item.Sector)</td>
+                                        <td>@Html.DisplayFor(model => item.Industry)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>
+                        ETF Holdings and allocations are subject to change at any time and should not be interpreted as an offer of these securities.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+
+    <!-- Prestige Sector & Share Allocation -->
+    <h1 class="h3 mb-2 text-gray-800">Prestige Sector & Industry</h1>
+    <p>as of @Model.PrestigePeriodic.TradeDate.ToString("d")</p>
+
+    <div class="row">
+        <!-- Sector Allocation Pie Chart -->
+        <div class="col-xl-6 col-md-6 mb-12">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="font-weight-bold text-success text-uppercase mb-1">Sector Allocation (%)</div>
+                            <br />
+                            <canvas id="pieChart1" width="400" height="280"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Industry Allocation Pie Chart  -->
+        <div class="col-xl-6 col-md-6 mb-12">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Industry Allocation (%)</div>
+                            <br />
+                            <canvas id="pieChart2" width="400" height="280"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+
+
+    <!-- ********************** Global Fund Report page ********************** -->
+    <!-- ********************************************************************* -->
+    <!-- ********************************************************************* -->
+    <!-- ********************************************************************* -->
+    <!-- ********************************************************************* -->
+    <!-- Global Fund Title -->
+    <div class="text-center">
+        <h2>ABC Global Fund Daily Report</h2>
+    </div>
+    <br />
+
+    <!-- Investment Objective -->
+    <h1 class="h3 mb-2 text-gray-800">Global Fund Objective</h1>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <p>
+                        The ABC Global Fund (ticker symbol: ABCG) aims at long-term capital growth by investing in United States (US) equity markets. This fund is made up of @Model.GlobalHoldings.Count() of the US securitites and is benchmarked against the Dow Jones Industrial Average (^DJI) and Nasdaq Composite (^IXIC).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Overview Chart -->
+    <h1 class="h3 mb-2 text-gray-800">Global Overview</h1>
+    <p>as of @Model.GlobalPeriodic.TradeDate.ToString("d")</p>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <canvas id="chartGlobal" class="my-4 w-100 chartjs-render-monitor" width="800" height="380" style="display: block; width: 90%; height: 40%;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+
+    <!-- Global Performance History -->
+    <h1 class="h3 mb-2 text-gray-800">Global Performance History</h1>
+    <p>as of @Model.GlobalPeriodic.TradeDate.ToString("d")</p>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        Global against Dow Jones Industrial Average and Nasdaq Composite
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Fund
+                                    </th>
+                                    <th>Year to Date</th>
+                                    <th>1 Month</th>
+                                    <th>3 Months</th>
+                                    <th>6 Months</th>
+                                    <th>1 Year</th>
+                                    <th>Since Inception (p.a)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Global (ABCG)
+                                    </td>
+                                    <td>
+                                        @Model.GlobalPeriodic.YearToDate%
+                                    </td>
+                                    <td>
+                                        @Model.GlobalPeriodic.OneMonth%
+                                    </td>
+                                    <td>
+                                        @Model.GlobalPeriodic.ThreeMonth%
+                                    </td>
+                                    <td>
+                                        @Model.GlobalPeriodic.SixMonth%
+                                    </td>
+                                    <td>
+                                        @Model.GlobalPeriodic.OneYear%
+                                    </td>
+                                    <td>
+                                        @Model.GlobalPeriodic.SinceInception%
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Dow Jones Industrial Average (^DJI)
+                                    </td>
+                                    <td>
+                                        @Model.DjiPeriodic.YearToDate%
+                                    </td>
+                                    <td>
+                                        @Model.DjiPeriodic.OneMonth%
+                                    </td>
+                                    <td>
+                                        @Model.DjiPeriodic.ThreeMonth%
+                                    </td>
+                                    <td>
+                                        @Model.DjiPeriodic.SixMonth%
+                                    </td>
+                                    <td>
+                                        @Model.DjiPeriodic.OneYear%
+                                    </td>
+                                    <td>
+                                        @Model.DjiPeriodic.SinceInception%
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Nasdaq Composite (Nasdaq Composite)
+                                    </td>
+                                    <td>
+                                        @Model.NasaqPeriodic.YearToDate%
+                                    </td>
+                                    <td>
+                                        @Model.NasaqPeriodic.OneMonth%
+                                    </td>
+                                    <td>
+                                        @Model.NasaqPeriodic.ThreeMonth%
+                                    </td>
+                                    <td>
+                                        @Model.NasaqPeriodic.SixMonth%
+                                    </td>
+                                    <td>
+                                        @Model.NasaqPeriodic.OneYear%
+                                    </td>
+                                    <td>
+                                        @Model.NasaqPeriodic.SinceInception%
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+
+    <!-- Global Top 10 Holdings -->
+    <h1 class="h3 mb-2 text-gray-800 pagebreak">Top 10 Global Holdings</h1>
+    <p>as of @Model.GlobalPeriodic.TradeDate.ToString("d")</p>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <!-- DataTales Example -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Global Fund Holdings (total: @Model.GlobalHoldings.Count())</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>@Html.DisplayNameFor(model => model.GlobalHoldings[0].Weight)</th>
+                                    <th>@Html.DisplayNameFor(model => model.GlobalHoldings[0].Name)</th>
+                                    <th>@Html.DisplayNameFor(model => model.GlobalHoldings[0].Symbol)</th>
+                                    <th>@Html.DisplayNameFor(model => model.GlobalHoldings[0].Sector)</th>
+                                    <th>@Html.DisplayNameFor(model => model.GlobalHoldings[0].Industry)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{int RowNo2 = 0;}
+                                @foreach (var item in Model.GlobalHoldings)
+                                {
+                                    <tr>
+                                        <td>@{RowNo2++;} @RowNo2</td>
+                                        <td>@Html.DisplayFor(model => item.Weight)%</td>
+                                        <td>@Html.DisplayFor(model => item.Name)</td>
+                                        <td>@Html.DisplayFor(model => item.Symbol)</td>
+                                        <td>@Html.DisplayFor(model => item.Sector)</td>
+                                        <td>@Html.DisplayFor(model => item.Industry)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>
+                        ETF Holdings and allocations are subject to change at any time and should not be interpreted as an offer of these securities.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <!-- Sector & Share Allocation -->
+    <h1 class="h3 mb-2 text-gray-800">Global Sector & Industry</h1>
+    <p>as of @Model.GlobalPeriodic.TradeDate.ToString("d")</p>
+
+    <div class="row">
+        <!-- Sector Allocation Pie Chart -->
+        <div class="col-xl-6 col-md-6 mb-12">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="font-weight-bold text-success text-uppercase mb-1">Sector Allocation (%)</div>
+                            <br />
+                            <canvas id="pieChart3" width="400" height="280"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Industry Allocation Pie Chart  -->
+        <div class="col-xl-6 col-md-6 mb-12">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Industry Allocation (%)</div>
+                            <br />
+                            <canvas id="pieChart4" width="400" height="280"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+
+    <!-- Fund Details -->
+    <h1 class="h3 mb-2 text-gray-800 pagebreak">ABC Fund Details</h1>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <!-- DataTales Example -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Prestige & Global Fund Details</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>ABC Prestige Fund (ABCP)</th>
+                                    <th>ABC Global Fund (ABCG)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Benchmark</td>
+                                    <td>Straits Times Index (^STI)</td>
+                                    <td>
+                                        Dow Jones Industrial Average(^DJI)<br />
+                                        Dow Jones Industrial Average(^IXIC)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Fund Size (*1)</td>
+                                    <td>SGD 100m</td>
+                                    <td>USD 100m</td>
+                                </tr>
+                                <tr>
+                                    <td>Base Currency</td>
+                                    <td>SGD</td>
+                                    <td>USD</td>
+                                </tr>
+                                <tr>
+                                    <td>Number of Holdings</td>
+                                    <td>@Model.PrestigeHoldings.Count()</td>
+                                    <td>@Model.GlobalHoldings.Count()</td>
+                                </tr>
+                                <tr>
+                                    <td>Initial Fee</td>
+                                    <td>@Model.PrestigeFund.InitialFee %</td>
+                                    <td>@Model.GlobalFund.InitialFee %</td>
+                                </tr>
+                                <tr>
+                                    <td>Eligible Investment Scheme (*2)</td>
+                                    <td>@Model.PrestigeFund.Scheme</td>
+                                    <td>@Model.GlobalFund.Scheme</td>
+                                </tr>
+                                <tr>
+                                    <td>All-inFee (*3)</td>
+                                    <td>@Model.PrestigeFund.AllInFee % p.a</td>
+                                    <td>@Model.GlobalFund.AllInFee % p.a</td>
+                                </tr>
+                                <tr>
+                                    <td>Expense Ratio (*4)</td>
+                                    <td>@Model.PrestigeFund.ExpenseRatio %</td>
+                                    <td>@Model.GlobalFund.ExpenseRatio %</td>
+                                </tr>
+                                <tr>
+                                    <td>Inception Date</td>
+                                    <td>@Model.PrestigeFund.InceptionDate.ToString("d")</td>
+                                    <td>@Model.GlobalFund.InceptionDate.ToString("d")</td>
+                                </tr>
+                                <tr>
+                                    <td>Dividend Frequency</td>
+                                    <td>@Model.PrestigeFund.DividendFrequency</td>
+                                    <td>@Model.GlobalFund.DividendFrequency</td>
+                                </tr>
+                                <tr>
+                                    <td>Cumulative Returns (%)</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Year To Date</td>
+                                    <td>@Model.PrestigePeriodic.YearToDate</td>
+                                    <td>@Model.GlobalPeriodic.YearToDate</td>
+                                </tr>
+                                <tr>
+                                    <td>1 Year</td>
+                                    <td>@Model.PrestigePeriodic.OneYear</td>
+                                    <td>@Model.GlobalPeriodic.OneYear</td>
+                                </tr>
+                                <tr>
+                                    <td>Since Inception</td>
+                                    <td>@Model.PrestigePeriodic.SinceInception</td>
+                                    <td>@Model.GlobalPeriodic.SinceInception</td>
+                                </tr>
+                                <tr>
+                                    <td>Annualised Returns (%)</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Since Inception (p.a)</td>
+                                    <td>@Model.PrestigePeriodic.AnnualisedReturns</td>
+                                    <td>@Model.GlobalPeriodic.AnnualisedReturns</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+
+    <!-- Disclaimer -->
+    <div class="row pagebreak">
+        <div class="col-lg-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Disclaimer
+                </div>
+                <div class="card-body">
+                    <p>
+                        Source: All fund data quoted are ABC, as at @Model.PrestigePeriodic.TradeDate.ToString("d"), unless stated otherwise.
+                        Fund performance is calculated in the respective fund currency with gross dividends re-invested. Investment returns are
+                        denominated in the respective base currency.
+                    </p>
+                    <p>
+                        <ol>
+                            <li>
+                                The Fund size quoted includes all share classes of the Fund.
+                            </li>
+                            <li>
+                                Investment using Supplementary Retirement Scheme (“SRS”) monies is only applicable to investors in Singapore.
+                            </li>
+                            <li>
+                                The All-in-Fee includes the expenses previously called management and administration fees.
+                            </li>
+                            <li>
+                                Total Expense Ratio (TER): Total cost (except transaction costs) charged to the Fund during the last financial year
+                                expressed as a ratio of the Fund's average NAV. For share classes that have been incepted for less than one year as at
+                                close of the last financial year (please refer to the Inception Date in the Fund Details table), the TER will be annualised.
+                                For share classes incepted after the close of the last financial year, the TER will be reflected as N/A
+                            </li>
+                        </ol>
+                    </p>
+                    <p>
+                        Information herein is based on sources we believe to be accurate and reliable as at the date it was made. We reserve the
+                        right to revise any information herein at any time without notice. No offer or solicitation to buy or sell securities and no
+                        investment advice or recommendation is made herein. In making investment decisions, investors should not rely solely on
+                        this publication but should seek independent professional advice. However, if you choose not to seek professional advice,
+                        you should consider the suitability of the product for yourself. Past performance of the fund manager(s) and the fund is not
+                        indicative of future performance. Prices of units in the Fund and the income from them, if any, may fall as well as rise and
+                        cannot be guaranteed. Distribution payments of the Fund, where applicable, may at the sole discretion of the Manager, be
+                        made out of either income and/or net capital gains or capital of the Fund. As a result, it may reduce the Fund’s net asset
+                        value. The dividend yields and payouts are not guaranteed and might change depending on the market conditions or at
+                        the Manager’s discretion. Investment involves risks including the possible loss of principal amount invested and risks
+                        associated with investment in emerging and less developed markets. The Fund may invest in financial derivative
+                        instruments and/or structured products and be subject to various risks (including counterparty, liquidity, credit and market
+                        risks etc.). Past performance, or any prediction, projection or forecast, is not indicative of future performance. Investors
+                        should read the Prospectus obtainable from ABC Fund Investors Singapore Limited or any of its appointed distributors
+                        for further details including the risk factors, before investing. This publication has not been reviewed by the Monetary
+                        Authority of Singapore (MAS).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"></script>
+
+    <!-- script for Performance Chart -->
+    <script>
+        $(document).ready(setup);
+
+        function setup() {
+            // Performance Chart
+            var option = {
+                type: "GET",
+                url: "/Report/GetChartJSON2",
+                contentType: "application/json;charset=utf-8",
+                dataset: "json",
+                success: performanceDataArrived
+            };
+            $.ajax(option);
+        }
+
+        function performanceDataArrived(data) {
+            console.log(data);
+            var prestigeDateLabels = data[0];
+            var prestigeData = data[1];
+            var stiData = data[2];
+            var globalDateLabels = data[3];
+            var globalData = data[4];
+            var djiData = data[5];
+            var nasdaqData = data[6];
+
+            var ctx = document.getElementById('chartPrestige');
+            var performanceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: prestigeDateLabels,
+                    datasets:
+                        [
+                            {
+                                label: 'Prestige (ABCP)',
+                                backgroundColor: 'rgba(63, 191, 191, 0.8)',
+                                borderColor: "rgba(63, 191, 191, 0.8)",
+                                pointBorderWidth: 1,
+                                pointRadius: 0,
+                                pointHitRadius: 8,
+                                fill: false,
+                                data: prestigeData
+                            },
+                            {
+                                label: 'STI Index (^STI)',
+                                backgroundColor: 'rgba(63, 63, 191, 0.6)',
+                                borderColor: "rgba(63, 63, 191, 0.6)",
+                                pointBorderWidth: 1,
+                                pointRadius: 0,
+                                pointHitRadius: 8,
+                                fill: false,
+                                data: stiData
+                            }
+                        ]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    hover: {
+                        mode: 'nearest',
+                        intersect: true
+                    },
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Date'
+                            },
+                            ticks: {
+                                autoSkip: true,
+                                maxTicksLimit: 12
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Cumulative Returns (%)'
+                            }
+                        }]
+                    }
+                }
+            });
+
+            var ctx2 = document.getElementById('chartGlobal');
+            var performanceChart2 = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: globalDateLabels,
+                    datasets:
+                        [
+                            {
+                                label: 'Global (ABCG)',
+                                backgroundColor: 'rgba(8, 147, 86, 0.8)',
+                                borderColor: "rgba(8, 147, 86, 0.8)",
+                                pointBorderWidth: 1,
+                                pointRadius: 0,
+                                pointHitRadius: 8,
+                                fill: false,
+                                data: globalData
+                            },
+                            {
+                                label: 'Dow Jones Industrial Average (^DJI)',
+                                backgroundColor: 'rgba(168, 86, 194, 0.5)',
+                                borderColor: "rgba(168, 86, 194, 0.5)",
+                                pointBorderWidth: 1,
+                                pointRadius: 0,
+                                pointHitRadius: 8,
+                                fill: false,
+                                data: djiData
+                            },
+                            {
+                                label: 'Nasdaq Composite (^IXIC)',
+                                backgroundColor: 'rgba(63, 135, 217, 0.5)',
+                                borderColor: "rgba(63, 135, 217, 0.5)",
+                                pointBorderWidth: 1,
+                                pointRadius: 0,
+                                pointHitRadius: 8,
+                                fill: false,
+                                data: nasdaqData
+                            }
+                        ]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    hover: {
+                        mode: 'nearest',
+                        intersect: true
+                    },
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Date'
+                            },
+                            ticks: {
+                                autoSkip: true,
+                                maxTicksLimit: 12
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Cumulative Returns (%)'
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
+        $(document).ready(setupSector);
+        function setupSector() {
+            // Sector Data
+            var option2 = {
+                type: "GET",
+                url: "/Report/GetAllFundSectorJSON",
+                contentType: "application/json;charset=utf-8",
+                dataset: "json",
+                success: sectorDataArrived
+            };
+            $.ajax(option2);
+        }
+        function sectorDataArrived(data2) {
+            console.log(data2);
+            var prestigeSectors = data2[0];
+            var prestigeWeights = data2[1];
+            var globalSectors = data2[2];
+            var globalweights = data2[3];
+
+            var ctx_sector = document.getElementById('pieChart1');
+            var myChart = new Chart(ctx_sector, {
+                type: 'doughnut',
+                data: {
+                    labels: prestigeSectors,
+                    datasets: [{
+                        label: 'By Sector',
+                        data: prestigeWeights,
+                        backgroundColor: [
+                            'rgba(90, 240, 100, 0.7)',
+                            'rgba(70, 200, 90, 0.7)',
+                            'rgba(50, 160, 70, 0.7)',
+                            'rgba(30, 120, 40, 0.7)',
+                            'rgba(10, 80, 20, 0.7)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            });
+
+            var ctx_sector2 = document.getElementById('pieChart3');
+            var myChart2 = new Chart(ctx_sector2, {
+                type: 'doughnut',
+                data: {
+                    labels: globalSectors,
+                    datasets: [{
+                        label: 'By Sector',
+                        data: globalweights,
+                        backgroundColor: [
+                            'rgba(110, 255, 120, 0.7)',
+                            'rgba(90, 240, 100, 0.7)',
+                            'rgba(70, 200, 90, 0.7)',
+                            'rgba(50, 160, 70, 0.7)',
+                            'rgba(30, 120, 40, 0.7)',
+                            'rgba(10, 80, 20, 0.7)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            });
+        }
+
+
+
+        $(document).ready(setupIndustry);
+        function setupIndustry() {
+            // Industry Data
+            var option3 = {
+                type: "GET",
+                url: "/Report/GetAllFundIndustryJSON",
+                contentType: "application/json;charset=utf-8",
+                dataset: "json",
+                success: industryDataArrived
+            };
+            $.ajax(option3);
+        }
+        function industryDataArrived(data3) {
+            console.log(data3);
+            var prestigeIndustries = data3[0];
+            var prestigeWeights = data3[1];
+            var globalIndustries = data3[2];
+            var globalWeights = data3[3];
+
+            var ctx_sector = document.getElementById('pieChart2');
+            var myChart = new Chart(ctx_sector, {
+                type: 'doughnut',
+                data: {
+                    labels: prestigeIndustries,
+                    datasets: [{
+                        label: 'By Industry',
+                        data: prestigeWeights,
+                        backgroundColor: [
+                            'rgba(70, 180, 210, 0.7)',
+                            'rgba(60, 160, 190, 0.7)',
+                            'rgba(50, 140, 170, 0.7)',
+                            'rgba(40, 120, 150, 0.7)',
+                            'rgba(30, 100, 130, 0.7)',
+                            'rgba(20, 80, 110, 0.7)',
+                            'rgba(10, 60, 90, 0.7)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            });
+
+            var ctx_sector2 = document.getElementById('pieChart4');
+            var myChart2 = new Chart(ctx_sector2, {
+                type: 'doughnut',
+                data: {
+                    labels: globalIndustries,
+                    datasets: [{
+                        label: 'By Industry',
+                        data: globalWeights,
+                        backgroundColor: [
+                            'rgba(70, 180, 210, 0.7)',
+                            'rgba(60, 160, 190, 0.7)',
+                            'rgba(50, 140, 170, 0.7)',
+                            'rgba(40, 120, 150, 0.7)',
+                            'rgba(30, 100, 130, 0.7)',
+                            'rgba(20, 80, 110, 0.7)',
+                            'rgba(10, 60, 90, 0.7)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            });
+        }
+
+
+    </script>
+}
