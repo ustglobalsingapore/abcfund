@@ -7,14 +7,16 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ABCFund.Data;
 using ABCFund.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ABCFund.Controllers
 {
+    [Authorize]
     public class InvestorsController : Controller
     {
-        private readonly ABCFundContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public InvestorsController(ABCFundContext context)
+        public InvestorsController(ApplicationDbContext context)
         {
             _context = context;
         }

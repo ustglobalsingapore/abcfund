@@ -7,14 +7,16 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ABCFund.Data;
 using ABCFund.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ABCFund.Controllers
 {
+    [Authorize]
     public class PrestigeController : Controller
     {
-        private readonly ABCFundContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public PrestigeController(ABCFundContext context)
+        public PrestigeController(ApplicationDbContext context)
         {
             _context = context;
         }

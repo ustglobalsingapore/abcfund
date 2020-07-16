@@ -8,14 +8,16 @@ using Microsoft.EntityFrameworkCore;
 using ABCFund.Models;
 using Microsoft.Extensions.Hosting;
 using ABCFund.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ABCFund.Controllers
 {
+    [Authorize]
     public class ReportController : Controller
     {
-        private readonly ABCFundContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public ReportController(ABCFundContext context)
+        public ReportController(ApplicationDbContext context)
         {
             _context = context;
         }
