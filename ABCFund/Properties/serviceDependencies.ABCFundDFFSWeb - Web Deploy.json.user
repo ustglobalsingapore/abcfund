@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "restored": true,
+      "restoreTime": "2020-07-30T04:00:12.3789182Z"
+    }
+  },
+  "parameters": {
+    "resourceGroup": {
+      "Type": "resourceGroup",
+      "Value": "ustsingapore"
+    },
+    "subscriptionId": {
+      "Type": "subscription",
+      "Value": "8b04ff13-3673-4dc7-a6a0-de2a898c6f6a"
+    }
+  }
+}

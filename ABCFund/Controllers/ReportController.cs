@@ -31,7 +31,7 @@ namespace ABCFund.Controllers
             var djiStockId = 12;
             var nasdaqStockId = 25;
             var dateEnds = DateTime.Today;
-            var dateStart = dateEnds.AddDays(-15);
+            var dateStart = dateEnds.AddDays(-30);
             var prestigeFundId = 1;
             var globalFundId = 2;
 
